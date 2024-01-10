@@ -6,8 +6,11 @@ const Footer = () => {
     <footer>
       <img src={Logo} alt="" />
       <span>
-        Made with <span className="heart-icon">&#10084;</span> and{" "}
-        <b>React.js</b>.
+        Made with{" "}
+        <span className="heart-icon" style={{ color: "red" }}>
+          &#10084;
+        </span>{" "}
+        and <b>React.js</b>.
       </span>
     </footer>
   );
