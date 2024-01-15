@@ -5,6 +5,7 @@ $lightGreen: #b9e7e7;
   justify-content: center;
   .container {
     width: 1024px;
+    margin: 0 auto; 
 
     .link {
       text-decoration: none;
@@ -18,8 +19,7 @@ $lightGreen: #b9e7e7;
       align-items: center;
       justify-content: center;
       height: 100vh;
-      background-color: $lightGreen;
-
+   
       h1 {
         font-size: 20px;
         color: teal;
@@ -30,14 +30,15 @@ $lightGreen: #b9e7e7;
         display: flex;
         flex-direction: column;
         padding: 50px;
-        background-color: white;
+      
         width: 200px;
         gap: 20px;
-
+     
         input {
           padding: 10px;
-          border: none;
+          border: none ;
           border-bottom: 1px solid gray;
+          outline: none;
         }
 
         button {
