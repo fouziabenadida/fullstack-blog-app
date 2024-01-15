@@ -1,9 +1,27 @@
 
 
-const register = (req, res) => {
+const register = async (req, res) => {
+    try {
+        const existingUser = await User.findOne({ $or: [{ email: req.body.email }, { username: req.body.username }] });
+        if (existingUser) {
+            return res.status(409).json("User already exists!");
+        }
+        const newUser = new User({
+            username: req.body.username,
+            email: req.body.email,
+            password: req.body.password,
+        });
 
-    const { username, email, password } = req.body;
-    res.json({ requestData: { username, email, password } });
+        await newUser.save();
+
+        res.status(200).json("User has been created.", { newUser });
+    }
+    catch (e) {
+        console.log(e);
+        res.status(400).json(e);
+    }
+
+
 };
 
 const login = (req, res) => {
