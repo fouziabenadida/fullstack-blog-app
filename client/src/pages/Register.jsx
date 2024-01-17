@@ -2,23 +2,30 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "../toastStyles.css";
 const Register = () => {
-  const [inputs, setInputs] = useState({
+  const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
-  const [err, setError] = useState(null);
+
   const handleChange = (e) => {
-    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const response = await axios.post(
         "http://localhost:8080/api/auth/register",
-        JSON.stringify(inputs),
+        JSON.stringify(formData),
         {
           method: "POST",
           headers: {
@@ -28,19 +35,18 @@ const Register = () => {
       );
       if (response.status === 200 || response.status === 201) {
         console.log("User registered successfully!");
-        // toast.success('Registration successful!', {
-        //   position: toast.POSITION.TOP_RIGHT,
-        // });
-        setInputs({
+        toast.success("Registration successful!", { position: "top-right" });
+        setFormData({
           username: "",
           email: "",
           password: "",
         });
+        // navigate('/');
       } else {
         console.error("Registration failed");
-        // toast.error('Registration failed. Please try again.', {
-        //   position: toast.POSITION.TOP_RIGHT,
-        // });
+        toast.error("Registration failed", {
+          position: "top-right",
+        });
       }
     } catch (error) {
       console.error("Error during registration:", error);
@@ -49,37 +55,42 @@ const Register = () => {
   return (
     <div className="auth">
       <h1>Register</h1>
-      <form>
+      <form onSubmit={handleSubmit}>
         <input
-          value={inputs.username}
           required
-          type="text"
-          placeholder="username"
           name="username"
+          value={formData.username}
+          className="registerInput"
+          type="text"
+          placeholder="Enter your username..."
           onChange={handleChange}
         />
         <input
-          required
-          value={inputs.email}
-          type="email"
-          placeholder="email"
           name="email"
+          value={formData.email}
+          className="registerInput"
+          type="email"
+          placeholder="Enter your email..."
           onChange={handleChange}
+          required
         />
         <input
-          required
-          type="password"
-          value={inputs.password}
-          placeholder="password"
           name="password"
+          required
+          value={formData.password}
+          className="registerInput"
+          type="password"
+          placeholder="Enter your password..."
           onChange={handleChange}
         />
-        <button onClick={handleSubmit}>Register</button>
+        <button>Register</button>
+
         <p>This is an error!</p>
         <span>
           Don't you have an account <Link to="/login">Login</Link>
         </span>
       </form>
+      <ToastContainer />
     </div>
   );
 };

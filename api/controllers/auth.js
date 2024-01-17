@@ -1,12 +1,13 @@
 const express = require("express")
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
+const salt = bcrypt.genSaltSync(10);
 const User = require('../models/auth')
 
 
 const register = async (req, res) => {
-    const { username, email, password } = req.body;
 
     try {
+        const { username, email, password } = req.body;
 
         if (!username || !password || !email) {
             return res.status(400).json({ error: 'Username and email password are required' });
@@ -15,8 +16,12 @@ const register = async (req, res) => {
         if (existingUser) {
             return res.status(400).json({ message: 'Username or email already exists' });
         }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ username, email, password: hashedPassword });
+
+        const newUser = new User({
+            username,
+            email,
+            password: bcrypt.hashSync(password, salt),
+        });
         await newUser.save();
 
         res.status(201).json({ message: 'User registered successfully' });
