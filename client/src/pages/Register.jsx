@@ -11,7 +11,7 @@ const Register = () => {
     email: "",
     password: "",
   });
-
+  const [err, setError] = useState("");
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -34,7 +34,7 @@ const Register = () => {
         }
       );
       if (response.status === 200 || response.status === 201) {
-        console.log("User registered successfully!");
+        console.log("User registered successfully!", response.data);
         toast.success("Registration successful!", { position: "top-right" });
         setFormData({
           username: "",
@@ -48,8 +48,9 @@ const Register = () => {
           position: "top-right",
         });
       }
-    } catch (error) {
-      console.error("Error during registration:", error);
+    } catch (err) {
+      console.error("Error during registration:", err);
+      setError(err.response.data.message);
     }
   };
   return (
@@ -62,7 +63,7 @@ const Register = () => {
           value={formData.username}
           className="registerInput"
           type="text"
-          placeholder="Enter your username..."
+          placeholder="username"
           onChange={handleChange}
         />
         <input
@@ -70,7 +71,7 @@ const Register = () => {
           value={formData.email}
           className="registerInput"
           type="email"
-          placeholder="Enter your email..."
+          placeholder="example@example.com"
           onChange={handleChange}
           required
         />
@@ -80,12 +81,11 @@ const Register = () => {
           value={formData.password}
           className="registerInput"
           type="password"
-          placeholder="Enter your password..."
+          placeholder="password"
           onChange={handleChange}
         />
         <button>Register</button>
-
-        <p>This is an error!</p>
+        {err && <p>{err}</p>}
         <span>
           Don't you have an account <Link to="/login">Login</Link>
         </span>
