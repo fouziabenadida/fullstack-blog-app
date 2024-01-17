@@ -1,6 +1,8 @@
 const express = require("express")
-const bcrypt = require('bcryptjs');
-const salt = bcrypt.genSaltSync(10);
+const bcrypt = require('bcryptjs')
+const salt = bcrypt.genSaltSync(10)
+const jwt = require('jsonwebtoken')
+const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 const User = require('../models/auth')
 
 
@@ -33,9 +35,32 @@ const register = async (req, res) => {
 
 };
 
-const login = (req, res) => {
+const login = async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        const user = await User.findOne({ username });
 
-    res.send('User login');
+        if (!user) {
+            return res.status(401).json({ error: 'user does not exist ' });
+        }
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+        const token = jwt.sign({ username: user.username }, 'secretkey');
+
+        res.cookie("access_token", token, {
+            httpOnly: true,
+        }).status(200).json({
+            id: user._id,
+            username,
+        })
+
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+
 };
 
 const logout = (req, res) => {

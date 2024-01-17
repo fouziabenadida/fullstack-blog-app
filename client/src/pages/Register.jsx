@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -12,6 +12,7 @@ const Register = () => {
     password: "",
   });
   const [err, setError] = useState("");
+  const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -41,7 +42,7 @@ const Register = () => {
           email: "",
           password: "",
         });
-        // navigate('/');
+        navigate("/login");
       } else {
         console.error("Registration failed");
         toast.error("Registration failed", {
