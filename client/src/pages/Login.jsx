@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../toastStyles.css";
+import { AuthContext } from "../context/authContext";
 const Login = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
   const [err, setError] = useState("");
+  const { login } = useContext(AuthContext);
+
   const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({
@@ -23,6 +26,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
+      await login(formData);
       const response = await axios.post(
         "http://localhost:8080/api/auth/login",
         JSON.stringify(formData),
@@ -37,7 +41,6 @@ const Login = () => {
       if (response.status === 200 || response.status === 201) {
         console.log("User login successfully!", response);
         toast.success("Login successful!", { position: "top-right" });
-        alert("login");
         setFormData({
           username: "",
           password: "",
@@ -50,8 +53,8 @@ const Login = () => {
         });
       }
     } catch (err) {
-      console.error("Error during registration:", err);
-      setError(err.response.data.message);
+      console.error("Error during login:", err);
+      setError(err.response.data.error);
     }
   };
 

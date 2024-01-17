@@ -45,7 +45,7 @@ const login = async (req, res) => {
         }
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+            return res.status(400).json({ error: 'wrong user name or password' });
         }
         const token = jwt.sign({ username: user.username }, 'secretkey');
 
@@ -65,7 +65,10 @@ const login = async (req, res) => {
 
 const logout = (req, res) => {
 
-    res.send('User logout');
+    res.clearCookie("access_token", {
+        sameSite: "none",
+        secure: true
+    }).status(200).json("User has been logged out.")
 };
 
 module.exports = {
