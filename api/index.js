@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 
 app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(cookieParser());
+app.use('/uploads', express.static(__dirname + '/uploads'));
 app.use(express.json())
 const connectDB = require('./db');
 connectDB();

@@ -16,6 +16,7 @@ export const AuthContexProvider = ({ children }) => {
     const logout = async (inputs) => {
         await axios.post("http://localhost:8080/api/auth/logout");
         setCurrentUser(null);
+
     };
 
     useEffect(() => {
