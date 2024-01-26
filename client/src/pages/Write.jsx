@@ -7,28 +7,50 @@ import moment from "moment";
 const Write = () => {
   const state = useLocation().state;
   const [value, setValue] = useState("");
-  const [title, setTitle] = useState(state?.desc || "");
-  const [file, setFile] = useState(null);
-  const [cat, setCat] = useState(state?.cat || "");
+  const [title, setTitle] = useState("");
+  const [file, setFile] = useState("");
+  const [cat, setCat] = useState("");
 
   const navigate = useNavigate();
 
-  const upload = async () => {
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await axios.post(
-        "http://localhost:8080/api/upload",
-        formData
-      );
+  const uploadFile = async () => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await axios.post(
+      "http://localhost:8080/api/files/upload",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data", // Important for file upload
+        },
+      }
+    );
+
+    if (res.status === 200) {
       return res.data;
-    } catch (err) {
-      console.log(err);
     }
+    throw "an error occoured while post file";
   };
-  const handleClick = async (e) => {
-    e.preventDefault();
-    upload();
+
+  const postBlog = async (imagePath) => {
+    let body = {
+      title: title,
+      content: value,
+      category: cat,
+      cover: imagePath,
+    };
+
+    const res = await axios.post("http://localhost:8080/api/posts", body);
+  };
+
+  const upload = async (e) => {
+    try {
+      e.preventDefault();
+      const imagePath = await uploadFile();
+      await postBlog(imagePath);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -37,6 +59,7 @@ const Write = () => {
         <input
           type="text"
           placeholder="Title"
+          value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
         <div className="editorContainer">
@@ -58,10 +81,11 @@ const Write = () => {
             <b>Visibility: </b> Public
           </span>
           <input
+            enctype="multipart/form-data"
             type="file"
             style={{ display: "none" }}
             id="file"
-            name=""
+            name="file"
             onChange={(e) => setFile(e.target.files[0])}
           />
           <label className="file" htmlFor="file">
@@ -69,7 +93,7 @@ const Write = () => {
           </label>
           <div className="buttons">
             <button>Save as a draft</button>
-            <button onClick={handleClick}>Publish</button>
+            <button onClick={upload}>Publish</button>
           </div>
         </div>
         <div className="item">

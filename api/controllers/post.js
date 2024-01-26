@@ -1,38 +1,31 @@
-const express = require("express")
-const multer = require("multer")
-const uploadMiddleware = multer({ dest: 'uploads/' });
 const Post = require("../models/post")
 
 
-const getPosts = (req, res) => {
-    res.json("from controller")
-};
 
 const getPost = (req, res) => {
-    res.json("from controller")
+
 };
-
-const addPost = async (req, res) => {
+const getPosts = async (req, res) => {
     try {
-        const { originalname, path } = req.file;
-        const parts = originalname.split('.');
-        const ext = parts[parts.length - 1];
-        const newPath = path + '.' + ext;
-        fs.renameSync(path, newPath);
-
-        const { title, category, content } = req.body;
-        const postDoc = await Post.create({
-            title,
-            category,
-            content,
-            cover: newPath,
-        })
-        res.json(postDoc)
+        const posts = await Post.find();
+        res.status(200).json(posts);
     } catch (error) {
-        console.log(error)
+        res.status(500).json({ message: error.message });
     }
+};
+const addPost = async (req, res) => {
+    const { title, category, content, cover } = req.body;
 
+    console.log(req.body)
+    const newPost = new Post({
+        title: title,
+        content: content,
+        category: category,
+        cover: cover,
+    });
 
+    const savedPost = await newPost.save();
+    res.status(201).json(savedPost);
 };
 
 const deletePost = (req, res) => {

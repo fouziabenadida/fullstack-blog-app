@@ -4,20 +4,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 const Home = () => {
-  // const [posts, setPosts] = useState([]);
   const cat = useLocation().search;
-  console.log(cat);
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const res = await axios.get(`http://localhost:8080/api/posts${cat}`);
-  //       setPosts(res.data);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   };
-  //   fetchData();
-  // }, [cat]);
+
   const posts = [
     {
       id: 1,
