@@ -45,7 +45,9 @@ const Login = () => {
           username: "",
           password: "",
         });
-        navigate("/");
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
       } else {
         console.error("loginfailed");
         toast.error("Login failed", {

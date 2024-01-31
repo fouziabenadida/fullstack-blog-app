@@ -3,7 +3,8 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import moment from "moment";
+import { toast, ToastContainer } from "react-toastify";
+
 const Write = () => {
   const state = useLocation().state;
   const [value, setValue] = useState("");
@@ -21,7 +22,7 @@ const Write = () => {
       formData,
       {
         headers: {
-          "Content-Type": "multipart/form-data", // Important for file upload
+          "Content-Type": "multipart/form-data",
         },
       }
     );
@@ -31,7 +32,6 @@ const Write = () => {
     }
     throw "an error occoured while post file";
   };
-
   const postBlog = async (imagePath) => {
     let body = {
       title: title,
@@ -40,7 +40,21 @@ const Write = () => {
       cover: imagePath,
     };
 
-    const res = await axios.post("http://localhost:8080/api/posts", body);
+    try {
+      const res = await axios.post("http://localhost:8080/api/posts", body);
+      if (res.status === 201) {
+        toast.success("post created", { position: "top-right" });
+
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
+      }
+    } catch (error) {
+      console.error("Error creating post:", error);
+      toast.error("Registration failed", {
+        position: "top-right",
+      });
+    }
   };
 
   const upload = async (e) => {
@@ -52,7 +66,6 @@ const Write = () => {
       console.error(err);
     }
   };
-
   return (
     <div className="add">
       <div className="content">
@@ -160,6 +173,7 @@ const Write = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
