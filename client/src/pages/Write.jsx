@@ -77,6 +77,7 @@ const Write = () => {
         />
         <div className="editorContainer">
           <ReactQuill
+            dangerouslySetInnerHTML
             className="editor"
             theme="snow"
             value={value}
