@@ -1,8 +1,6 @@
-const express = require("express")
 const bcrypt = require('bcryptjs')
 const salt = bcrypt.genSaltSync(10)
 const jwt = require('jsonwebtoken')
-const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 const User = require('../models/auth')
 
 
@@ -41,7 +39,7 @@ const login = async (req, res) => {
         const user = await User.findOne({ username });
 
         if (!user) {
-            return res.status(401).json({ error: 'user does not exist ' });
+            return res.status(401).json({ error: 'user does not exist' });
         }
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {

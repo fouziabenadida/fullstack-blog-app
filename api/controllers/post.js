@@ -1,7 +1,5 @@
 const Post = require("../models/post")
 
-
-
 const getPost = (req, res) => {
 
 };
